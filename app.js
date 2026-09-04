@@ -1,6 +1,6 @@
 // IMPORTANT: Apna Worker URL yahan dalna hai
 // Jab Worker banayega tab URL milega
-const API_URL = 'https://usa-ip-api.YOUR_USERNAME.workers.dev';
+const API_URL = 'https://usa-ip-database.mshoaib-archnetix.workers.dev';
 
 class IPDatabaseApp {
     constructor() {
