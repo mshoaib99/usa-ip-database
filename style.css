@@ -6,9 +6,8 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background: #f4f6f9;
-    color: #1f2937;
-    min-height: 100vh;
+    background: #f5f7fb;
+    color: #111827;
 }
 
 .page {
@@ -16,66 +15,63 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 20px;
 }
 
 .card {
     width: 100%;
-    max-width: 460px;
+    max-width: 480px;
     background: #ffffff;
     border-radius: 16px;
-    padding: 36px;
+    padding: 40px;
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-}
-
-.header {
-    text-align: center;
-    margin-bottom: 30px;
+    border: 1px solid #e5e7eb;
 }
 
 .icon {
-    width: 58px;
-    height: 58px;
-    margin: 0 auto 18px;
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    background: #2563eb;
+    color: white;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: #2563eb;
-    color: #ffffff;
-
-    border-radius: 14px;
-
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
+
+    margin: 0 auto 24px;
 }
 
-.header h1 {
-    font-size: 27px;
-    line-height: 1.2;
-    margin-bottom: 9px;
+h1 {
+    text-align: center;
+    font-size: 24px;
+    line-height: 1.35;
+    margin-bottom: 10px;
 }
 
-.header p {
+.subtitle {
+    text-align: center;
     color: #6b7280;
     font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 30px;
 }
 
-.form-group {
+.input-group {
     margin-bottom: 18px;
 }
 
-.form-group label {
+label {
     display: block;
-    margin-bottom: 8px;
-
     font-size: 14px;
     font-weight: 600;
-    color: #374151;
+    margin-bottom: 8px;
 }
 
-.form-group input {
+input {
     width: 100%;
     height: 50px;
 
@@ -85,20 +81,13 @@ body {
     padding: 0 15px;
 
     font-size: 15px;
-    color: #111827;
-
     outline: none;
 
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-group input::placeholder {
-    color: #9ca3af;
-}
-
-.form-group input:focus {
+input:focus {
     border-color: #2563eb;
-
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
@@ -110,7 +99,7 @@ button {
     border-radius: 10px;
 
     background: #2563eb;
-    color: #ffffff;
+    color: white;
 
     font-size: 15px;
     font-weight: 600;
@@ -129,76 +118,51 @@ button:active {
 }
 
 button:disabled {
-    opacity: 0.7;
+    background: #93c5fd;
     cursor: not-allowed;
 }
 
 .message {
-    margin-top: 18px;
+    display: none;
 
-    padding: 14px 16px;
+    margin-top: 20px;
+    padding: 13px 15px;
 
-    border-radius: 10px;
+    border-radius: 9px;
+
+    text-align: center;
 
     font-size: 14px;
-    line-height: 1.5;
+    font-weight: 600;
+}
+
+.message.show {
+    display: block;
 }
 
 .message.success {
-    background: #ecfdf5;
-    color: #047857;
-    border: 1px solid #a7f3d0;
+    background: #dcfce7;
+    color: #166534;
 }
 
 .message.error {
-    background: #fef2f2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
+    background: #fee2e2;
+    color: #991b1b;
 }
 
 .message.warning {
-    background: #fffbeb;
-    color: #b45309;
-    border: 1px solid #fde68a;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.loader {
-    display: inline-block;
-
-    width: 17px;
-    height: 17px;
-
-    border: 2px solid rgba(255, 255, 255, 0.45);
-    border-top-color: #ffffff;
-
-    border-radius: 50%;
-
-    animation: spin 0.7s linear infinite;
-
-    vertical-align: middle;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    background: #fef3c7;
+    color: #92400e;
 }
 
 @media (max-width: 520px) {
-
-    .page {
-        padding: 16px;
-    }
 
     .card {
         padding: 28px 22px;
     }
 
-    .header h1 {
-        font-size: 24px;
+    h1 {
+        font-size: 21px;
     }
+
 }
