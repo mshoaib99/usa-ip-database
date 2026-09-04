@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USA IP Database - Cloudflare Hosted</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🇺🇸 USA IP Database</h1>
+            <p>Powered by Cloudflare Workers + D1</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Status Cards -->
+        <div class="status-cards">
+            <div class="status-card">
+                <div class="icon">✓</div>
+                <div class="label">SESSION</div>
+                <div class="value">Active</div>
+            </div>
+            <div class="status-card">
+                <div class="icon">🔍</div>
+                <div class="label">CLOUDFLARE</div>
+                <div class="value">Connected</div>
+            </div>
+            <div class="status-card">
+                <div class="icon">⚡</div>
+                <div class="label">DATABASE</div>
+                <div class="value">D1 Ready</div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="dashboard-stats">
+            <div class="stat-box">
+                <div class="stat-number" id="totalIPsCount">0</div>
+                <div class="stat-label">Total USA IPs</div>
+            </div>
+            <div class="stat-box success">
+                <div class="stat-number" id="todayUploadCount">0</div>
+                <div class="stat-label">Today's Uploads</div>
+            </div>
+            <div class="stat-box warning">
+                <div class="stat-number" id="duplicateCount">0</div>
+                <div class="stat-label">Duplicate Attempts</div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <h2>⬆️ Upload USA IP</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ipInput">Enter USA IP Address</label>
+                    <input 
+                        type="text" 
+                        id="ipInput" 
+                        placeholder="e.g., 8.8.8.8"
+                        autocomplete="off"
+                    >
+                </div>
+                <button type="button" id="uploadBtn" class="btn-primary">Upload IP</button>
+            </div>
+
+            <div id="uploadNotification"></div>
+        </div>
+
+        <!-- IP Records Table -->
+        <div class="table-section">
+            <h2>📋 Stored IP Records</h2>
+
+            <div class="table-controls">
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Search by IP, city, region..."
+                    >
+                </div>
+                <button type="button" id="searchBtn" class="btn-primary">Search</button>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>Country</th>
+                            <th>Region</th>
+                            <th>City</th>
+                            <th>Organization</th>
+                            <th>Uploaded At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ipTableBody">
+                        <tr>
+                            <td colspan="6" class="empty-state"><p>Loading records...</p></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
