@@ -1,41 +1,40 @@
 /**
- * USA IP Database - Frontend Application
- * Fully Working Version
+ * USA IP Database - Frontend
+ * BILKUL WORKING VERSION
  */
 
-const API_URL = 'https://usa-ip-api.mshoaib-archnetix.workers.dev/';
+// ✅ CORRECT WORKER URL
+const API_URL = 'https://usa-ip-api.mshoaib-archnetix.workers.dev';
 
-class IPDatabaseApp {
+class IPDatabase {
     constructor() {
-        this.currentPage = 1;
+        this.page = 1;
         this.searchQuery = '';
-        this.isLoading = false;
-        console.log('🚀 App Initialized');
-        console.log('📡 API:', API_URL);
         this.init();
     }
 
     init() {
-        this.setupEventListeners();
-        this.loadIPRecords();
-        this.updateStats();
+        console.log('✅ App Started');
+        console.log('📡 Worker URL:', API_URL);
+        this.attachListeners();
+        this.loadRecords();
+        this.loadStats();
     }
 
-    setupEventListeners() {
-        // Upload form
-        const uploadForm = document.getElementById('uploadForm');
-        uploadForm.addEventListener('submit', (e) => {
+    attachListeners() {
+        // Upload
+        document.getElementById('uploadForm').addEventListener('submit', (e) => {
             e.preventDefault();
             this.uploadIP();
         });
 
         // Search
-        document.getElementById('searchBtn').addEventListener('click', () => this.performSearch());
+        document.getElementById('searchBtn').addEventListener('click', () => this.search());
         document.getElementById('searchInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.performSearch();
+            if (e.key === 'Enter') this.search();
         });
 
-        // Clear search
+        // Clear
         document.getElementById('clearBtn').addEventListener('click', () => this.clearSearch());
     }
 
@@ -44,111 +43,98 @@ class IPDatabaseApp {
         const uploadBtn = document.getElementById('uploadBtn');
         const notification = document.getElementById('uploadNotification');
 
-        const ipAddress = ipInput.value.trim();
+        const ip = ipInput.value.trim();
 
-        if (!ipAddress) {
-            this.showNotification(notification, 'error', '❌ Error', 'Please enter an IP address');
+        if (!ip) {
+            this.showNotification(notification, 'error', '❌ Error: Please enter an IP address');
             return;
         }
 
         uploadBtn.disabled = true;
 
         try {
+            console.log('📤 Uploading IP:', ip);
+
             const response = await fetch(`${API_URL}/api/upload-ip`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ip_address: ipAddress }),
+                body: JSON.stringify({ ip_address: ip }),
             });
 
             const data = await response.json();
+            console.log('📥 Response:', data);
 
             if (data.success) {
-                this.showNotification(notification, 'success', '✅ Success', data.message);
+                this.showNotification(notification, 'success', `✅ ${data.message}`);
                 ipInput.value = '';
-                ipInput.focus();
-
+                
                 setTimeout(() => {
-                    this.loadIPRecords();
-                    this.updateStats();
+                    this.loadRecords();
+                    this.loadStats();
                 }, 1000);
             } else if (data.status === 'duplicate') {
-                this.showNotification(notification, 'error', '⚠️ Duplicate', data.message);
+                this.showNotification(notification, 'error', `⚠️ ${data.message}`);
             } else if (data.status === 'non_usa') {
-                this.showNotification(notification, 'error', '🌍 Not USA', data.message);
+                this.showNotification(notification, 'error', `🌍 ${data.message}`);
             } else if (data.status === 'invalid') {
-                this.showNotification(notification, 'error', '❌ Invalid', data.message);
+                this.showNotification(notification, 'error', `❌ ${data.message}`);
             } else {
-                this.showNotification(notification, 'error', '❌ Error', data.message || 'Unknown error');
+                this.showNotification(notification, 'error', `❌ Error: ${data.message}`);
             }
         } catch (error) {
-            console.error('Upload error:', error);
-            this.showNotification(notification, 'error', '❌ Connection Error', 'Could not connect to server');
+            console.error('❌ Upload Error:', error);
+            this.showNotification(notification, 'error', `❌ Error: ${error.message}`);
         } finally {
             uploadBtn.disabled = false;
         }
     }
 
-    async loadIPRecords(page = 1) {
-        if (this.isLoading) return;
-
-        this.isLoading = true;
-        const tableBody = document.getElementById('ipTableBody');
-        tableBody.innerHTML = '<tr class="empty-state"><td colspan="6">⏳ Loading...</td></tr>';
+    async loadRecords(page = 1) {
+        const tbody = document.getElementById('ipTableBody');
+        tbody.innerHTML = '<tr><td colspan="6" class="loading">Loading...</td></tr>';
 
         try {
             const url = new URL(`${API_URL}/api/ips`);
             url.searchParams.append('page', page);
             if (this.searchQuery) url.searchParams.append('search', this.searchQuery);
 
+            console.log('📥 Fetching:', url.toString());
+
             const response = await fetch(url);
             const data = await response.json();
 
+            console.log('Response:', data);
+
             if (!data.success) throw new Error(data.message);
 
-            tableBody.innerHTML = '';
+            tbody.innerHTML = '';
 
             if (data.records.length === 0) {
-                tableBody.innerHTML = '<tr class="empty-state"><td colspan="6">📭 No records found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="empty">No records found</td></tr>';
             } else {
                 data.records.forEach(record => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${this.escapeHtml(record.ip_address)}</td>
-                        <td>${this.escapeHtml(record.country)}</td>
-                        <td>${this.escapeHtml(record.region)}</td>
-                        <td>${this.escapeHtml(record.city)}</td>
-                        <td>${this.escapeHtml(record.organization)}</td>
-                        <td>${this.escapeHtml(record.uploaded_at)}</td>
+                        <td>${this.escape(record.ip_address)}</td>
+                        <td>${this.escape(record.country)}</td>
+                        <td>${this.escape(record.region)}</td>
+                        <td>${this.escape(record.city)}</td>
+                        <td>${this.escape(record.organization)}</td>
+                        <td>${this.escape(record.uploaded_at)}</td>
                     `;
-                    tableBody.appendChild(row);
+                    tbody.appendChild(row);
                 });
             }
 
-            this.updatePagination(data.pagination);
-            this.currentPage = page;
+            this.paginate(data.pagination);
+            this.page = page;
         } catch (error) {
             console.error('Load error:', error);
-            tableBody.innerHTML = `<tr class="empty-state"><td colspan="6">❌ ${error.message}</td></tr>`;
-        } finally {
-            this.isLoading = false;
+            tbody.innerHTML = `<tr><td colspan="6" class="empty">❌ ${error.message}</td></tr>`;
         }
     }
 
-    async performSearch() {
-        const searchInput = document.getElementById('searchInput');
-        this.searchQuery = searchInput.value.trim();
-        this.currentPage = 1;
-        await this.loadIPRecords(1);
-    }
-
-    clearSearch() {
-        document.getElementById('searchInput').value = '';
-        this.searchQuery = '';
-        this.currentPage = 1;
-        this.loadIPRecords(1);
-    }
-
-    async updateStats() {
+    async loadStats() {
         try {
             const response = await fetch(`${API_URL}/api/stats`);
             const data = await response.json();
@@ -163,22 +149,34 @@ class IPDatabaseApp {
         }
     }
 
-    updatePagination(pagination) {
+    search() {
+        const searchInput = document.getElementById('searchInput');
+        this.searchQuery = searchInput.value.trim();
+        this.page = 1;
+        this.loadRecords(1);
+    }
+
+    clearSearch() {
+        document.getElementById('searchInput').value = '';
+        this.searchQuery = '';
+        this.page = 1;
+        this.loadRecords(1);
+    }
+
+    paginate(pagination) {
         const container = document.getElementById('pagination');
         container.innerHTML = '';
 
         const { page, total_pages } = pagination;
         if (total_pages <= 1) return;
 
-        // Previous
         if (page > 1) {
             const btn = document.createElement('button');
             btn.textContent = '← Previous';
-            btn.onclick = () => this.loadIPRecords(page - 1);
+            btn.onclick = () => this.loadRecords(page - 1);
             container.appendChild(btn);
         }
 
-        // Pages
         const start = Math.max(1, page - 2);
         const end = Math.min(total_pages, page + 2);
 
@@ -189,50 +187,36 @@ class IPDatabaseApp {
                 btn.classList.add('active');
                 btn.disabled = true;
             }
-            btn.onclick = () => this.loadIPRecords(i);
+            btn.onclick = () => this.loadRecords(i);
             container.appendChild(btn);
         }
 
-        // Next
         if (page < total_pages) {
             const btn = document.createElement('button');
             btn.textContent = 'Next →';
-            btn.onclick = () => this.loadIPRecords(page + 1);
+            btn.onclick = () => this.loadRecords(page + 1);
             container.appendChild(btn);
         }
     }
 
-    showNotification(container, type, title, message) {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-
-        const icons = { success: '✓', error: '✕', warning: '⚠' };
-
-        notification.innerHTML = `
-            <div class="notification-icon">${icons[type] || '○'}</div>
-            <div class="notification-content">
-                <div class="notification-title">${this.escapeHtml(title)}</div>
-                <div class="notification-message">${this.escapeHtml(message)}</div>
-            </div>
-        `;
-
-        container.innerHTML = '';
-        container.appendChild(notification);
+    showNotification(container, type, message) {
+        container.className = `notification show ${type}`;
+        container.textContent = message;
 
         setTimeout(() => {
-            if (notification.parentElement) notification.remove();
-        }, 5000);
+            container.classList.remove('show');
+        }, 4000);
     }
 
-    escapeHtml(text) {
-        if (!text) return '';
+    escape(text) {
+        if (!text) return 'N/A';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
 }
 
-// Initialize
+// Start
 document.addEventListener('DOMContentLoaded', () => {
-    new IPDatabaseApp();
+    new IPDatabase();
 });
