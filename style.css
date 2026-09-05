@@ -22,7 +22,7 @@ body {
 .upload-card {
     background: white;
     padding: 80px 60px;
-    border-radius: 20px;
+    border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
