@@ -3,131 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USA IP Database Management</title>
+    <title>USA IP Database</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-wrapper">
-            <div class="nav-brand">
-                <span class="brand-icon">🌐</span>
-                <span class="brand-name">USA IP Manager</span>
+    <div class="container">
+        <header>
+            <h1>🇺🇸 USA IP Database</h1>
+            <p>Upload, manage, and track USA IP addresses</p>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number" id="totalIPsCount">0</div>
+                <div class="stat-label">Total IPs</div>
             </div>
-            <div class="nav-badge">
-                <span class="badge-dot"></span>
-                <span class="badge-text">Live</span>
+            <div class="stat">
+                <div class="stat-number" id="todayUploadCount">0</div>
+                <div class="stat-label">Today's Uploads</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="duplicateCount">0</div>
+                <div class="stat-label">Duplicates</div>
             </div>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-background"></div>
-        <div class="hero-content">
-            <div class="hero-icon">🇺🇸</div>
-            <h1>USA IP Database Management</h1>
-            <p>Upload, verify, and manage USA IP addresses with real-time geolocation</p>
-        </div>
-    </section>
-
-    <!-- Main Container -->
-    <div class="main-container">
-        <!-- Statistics Section -->
-        <section class="stats-grid">
-            <div class="stat-item" id="stat-total">
-                <div class="stat-icon">📊</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="totalIPsCount">0</div>
-                    <div class="stat-title">Total IPs</div>
-                </div>
-            </div>
-
-            <div class="stat-item" id="stat-today">
-                <div class="stat-icon">📈</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="todayUploadCount">0</div>
-                    <div class="stat-title">Today's Uploads</div>
-                </div>
-            </div>
-
-            <div class="stat-item" id="stat-duplicate">
-                <div class="stat-icon">⚠️</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="duplicateCount">0</div>
-                    <div class="stat-title">Duplicates</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Upload Card -->
-        <section class="upload-card">
-            <div class="card-header">
-                <h2 class="card-title">➕ Add New IP Address</h2>
-                <p class="card-subtitle">Enter a USA IP address to add it to your database</p>
-            </div>
-
-            <form class="upload-form" id="uploadForm">
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <h2>📍 Add New IP Address</h2>
+            <form id="uploadForm">
                 <div class="form-group">
-                    <label for="ipInput" class="form-label">IP Address</label>
-                    <div class="input-wrapper">
-                        <input
-                            type="text"
-                            id="ipInput"
-                            class="form-input"
-                            placeholder="e.g., 8.8.8.8"
-                            autocomplete="off"
-                            required
-                        >
-                        <span class="input-icon">📍</span>
-                    </div>
+                    <input
+                        type="text"
+                        id="ipInput"
+                        class="input-field"
+                        placeholder="Enter IP address (e.g., 8.8.8.8)"
+                        required
+                    >
                 </div>
-
-                <button type="submit" id="uploadBtn" class="btn-primary">
+                <button type="submit" id="uploadBtn" class="btn-upload">
                     <span class="btn-text">Upload IP</span>
-                    <span class="btn-loader" style="display: none;">
-                        <span class="loader-dot"></span>
-                        <span class="loader-dot"></span>
-                        <span class="loader-dot"></span>
-                    </span>
+                    <span class="btn-loader"></span>
                 </button>
             </form>
-
-            <!-- Notification -->
-            <div id="uploadNotification" class="notification-container"></div>
-
-            <!-- Tip Box -->
-            <div class="tip-box">
-                <span class="tip-icon">💡</span>
-                <span class="tip-text">Test with <code>8.8.8.8</code> (Google DNS) or <code>208.67.222.222</code> (OpenDNS)</span>
-            </div>
+            <div id="uploadNotification" class="notification"></div>
         </section>
 
         <!-- Records Section -->
-        <section class="records-card">
-            <div class="card-header">
-                <h2 class="card-title">📋 Database Records</h2>
-                <p class="card-subtitle">All USA IP addresses stored in your database</p>
+        <section class="records-section">
+            <h2>📋 All Records</h2>
+            
+            <div class="search-area">
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search-field"
+                    placeholder="Search by IP, city, region..."
+                >
+                <button id="searchBtn" class="btn-search">Search</button>
+                <button id="clearBtn" class="btn-clear">Clear</button>
             </div>
 
-            <!-- Search Bar -->
-            <div class="search-section">
-                <div class="search-wrapper">
-                    <span class="search-icon">🔍</span>
-                    <input
-                        type="text"
-                        id="searchInput"
-                        class="search-input"
-                        placeholder="Search by IP, city, region, or organization..."
-                    >
-                    <button type="button" id="clearBtn" class="btn-clear">✕</button>
-                </div>
-                <button type="button" id="searchBtn" class="btn-search">Search</button>
-            </div>
-
-            <!-- Table -->
             <div class="table-wrapper">
-                <table class="data-table">
+                <table class="records-table">
                     <thead>
                         <tr>
                             <th>IP Address</th>
@@ -135,26 +74,20 @@
                             <th>Region</th>
                             <th>City</th>
                             <th>Organization</th>
-                            <th>Added Date</th>
+                            <th>Date Added</th>
                         </tr>
                     </thead>
                     <tbody id="ipTableBody">
-                        <tr class="empty-state">
-                            <td colspan="6">⏳ Loading records...</td>
+                        <tr>
+                            <td colspan="6" class="loading">Loading records...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="pagination" id="pagination"></div>
         </section>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>Built with Cloudflare Workers + D1 Database | Free & Open Source</p>
-    </footer>
 
     <script src="app.js"></script>
 </body>
