@@ -3,90 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USA IP Database</title>
+    <title>Upload Your IP</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🇺🇸 USA IP Database</h1>
-            <p>Upload, manage, and track USA IP addresses</p>
-        </header>
-
-        <!-- Stats -->
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-number" id="totalIPsCount">0</div>
-                <div class="stat-label">Total IPs</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number" id="todayUploadCount">0</div>
-                <div class="stat-label">Today's Uploads</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number" id="duplicateCount">0</div>
-                <div class="stat-label">Duplicates</div>
-            </div>
-        </div>
-
-        <!-- Upload Section -->
-        <section class="upload-section">
-            <h2>📍 Add New IP Address</h2>
+        <div class="upload-card">
+            <h2>📍 Upload Your IP</h2>
+            
             <form id="uploadForm">
-                <div class="form-group">
-                    <input
-                        type="text"
-                        id="ipInput"
-                        class="input-field"
-                        placeholder="Enter IP address (e.g., 8.8.8.8)"
-                        required
-                    >
-                </div>
+                <input
+                    type="text"
+                    id="ipInput"
+                    class="input-field"
+                    placeholder="Enter IP address (e.g., 8.8.8.8)"
+                    required
+                >
                 <button type="submit" id="uploadBtn" class="btn-upload">
                     <span class="btn-text">Upload IP</span>
                     <span class="btn-loader"></span>
                 </button>
             </form>
+
             <div id="uploadNotification" class="notification"></div>
-        </section>
-
-        <!-- Records Section -->
-        <section class="records-section">
-            <h2>📋 All Records</h2>
-            
-            <div class="search-area">
-                <input
-                    type="text"
-                    id="searchInput"
-                    class="search-field"
-                    placeholder="Search by IP, city, region..."
-                >
-                <button id="searchBtn" class="btn-search">Search</button>
-                <button id="clearBtn" class="btn-clear">Clear</button>
-            </div>
-
-            <div class="table-wrapper">
-                <table class="records-table">
-                    <thead>
-                        <tr>
-                            <th>IP Address</th>
-                            <th>Country</th>
-                            <th>Region</th>
-                            <th>City</th>
-                            <th>Organization</th>
-                            <th>Date Added</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ipTableBody">
-                        <tr>
-                            <td colspan="6" class="loading">Loading records...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="pagination" id="pagination"></div>
-        </section>
+        </div>
     </div>
 
     <script src="app.js"></script>
