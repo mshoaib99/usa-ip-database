@@ -18,6 +18,31 @@ class UploadIP {
         });
     }
 
+    // Automatically retry if browser connection fails
+    async fetchWithRetry(url, options, maxAttempts = 3) {
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                console.log(`📡 Request attempt: ${attempt}`);
+
+                return await fetch(url, {
+                    ...options,
+                    cache: 'no-store'
+                });
+
+            } catch (error) {
+                console.error(`❌ Attempt ${attempt} failed:`, error);
+
+                if (attempt === maxAttempts) {
+                    throw error;
+                }
+
+                await new Promise(resolve =>
+                    setTimeout(resolve, attempt * 1000)
+                );
+            }
+        }
+    }
+
     async uploadIP() {
         const ipInput = document.getElementById('ipInput');
         const uploadBtn = document.getElementById('uploadBtn');
@@ -26,7 +51,11 @@ class UploadIP {
         const ip = ipInput.value.trim();
 
         if (!ip) {
-            this.showNotification(notification, 'error', '❌ Please enter an IP address');
+            this.showNotification(
+                notification,
+                'error',
+                '❌ Please enter an IP address'
+            );
             return;
         }
 
@@ -35,31 +64,64 @@ class UploadIP {
         try {
             console.log('📤 Uploading:', ip);
 
-            const response = await fetch(`${API_URL}/api/upload-ip`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ip_address: ip }),
-            });
+            const response = await this.fetchWithRetry(
+                `${API_URL}/api/upload-ip`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ip_address: ip
+                    })
+                }
+            );
 
             const data = await response.json();
+
             console.log('📥 Response:', data);
 
             if (data.success) {
-                this.showNotification(notification, 'success', `✅ ${data.message}`);
+                this.showNotification(
+                    notification,
+                    'success',
+                    `✅ ${data.message}`
+                );
+
                 ipInput.value = '';
                 ipInput.focus();
+
             } else if (data.status === 'duplicate') {
-                this.showNotification(notification, 'error', `⚠️ ${data.message}`);
-            } else if (data.status === 'non_usa') {
-                this.showNotification(notification, 'error', `🌍 ${data.message}`);
+                this.showNotification(
+                    notification,
+                    'error',
+                    `⚠️ ${data.message}`
+                );
+
             } else if (data.status === 'invalid') {
-                this.showNotification(notification, 'error', `❌ ${data.message}`);
+                this.showNotification(
+                    notification,
+                    'error',
+                    `❌ ${data.message}`
+                );
+
             } else {
-                this.showNotification(notification, 'error', `❌ ${data.message}`);
+                this.showNotification(
+                    notification,
+                    'error',
+                    `❌ ${data.message || 'Upload failed'}`
+                );
             }
+
         } catch (error) {
-            console.error('Error:', error);
-            this.showNotification(notification, 'error', `❌ ${error.message}`);
+            console.error('Final Upload Error:', error);
+
+            this.showNotification(
+                notification,
+                'error',
+                '❌ Connection failed after 3 attempts. Please try again.'
+            );
+
         } finally {
             uploadBtn.disabled = false;
         }
@@ -71,7 +133,7 @@ class UploadIP {
 
         setTimeout(() => {
             container.classList.remove('show');
-        }, 4000);
+        }, 5000);
     }
 }
 
